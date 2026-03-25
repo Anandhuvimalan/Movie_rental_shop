@@ -1,70 +1,134 @@
-# Dynamic Workspace Data Analysis Master Prompt
+# Simple Dynamic Data Analysis Master Prompt
 
-This prompt is designed for AI assistants that have access to your local project folder or workspace (like Google Gemini Code Assist, Cursor, or GitHub Copilot). It instructs the AI to **automatically search your workspace, find the CSV files on its own**, understand them, and generate a complete, professional Data Analysis Jupyter Notebook. 
+Use this prompt with an AI assistant that can access your project folder. The goal is to generate a clear, student-friendly Jupyter Notebook for whatever CSV data exists in the project.
 
-**How to use:**
-1. Open your AI assistant within your project workspace where your CSV files are located.
-2. Copy the text between `BEGIN PROMPT` and `END PROMPT` and send it to the AI.
-3. Sit back and watch it find your data and write the complete analysis!
+## How to use
+1. Open your AI assistant inside the project folder.
+2. Copy the text between `BEGIN PROMPT` and `END PROMPT`.
+3. Send it to the assistant.
 
 ---
 **BEGIN PROMPT**
 ---
 
-**Role & Objective:**
-You are an Expert Data Scientist, Business Analyst, and Python Educator. I will NOT be attaching any CSV files. Instead, you have access to my project folder/workspace. **Your very first task** is to search the root folder and subfolders of this workspace to locate any `.csv` datasets. Once found, use their paths and dynamically analyze this specific data to generate a complete, end-to-end, production-ready Python data analysis pipeline in the format of a Jupyter Notebook (IPYNB). 
+You are an expert data analyst and Python teacher.
 
-Your target audience is data analysis students or business stakeholders, so your output must be **highly readable, beginner-friendly, and professionally executed**. You must provide detailed Markdown documentation explaining your thought process ("why" and "how") before every code block. All your analysis, metrics, and code must be dynamically tailored to the precise columns, data types, and business context of the data you discover in my folder.
+I will not attach the CSV files manually. You have access to my project folder. Your job is to search the project, find all CSV files, understand the data, and create a complete Jupyter Notebook (`.ipynb`) for the data that exists in this project.
 
-Please follow these exact steps sequentially. Do not skip or shorten any step.need heading for each sections.
+The notebook must be:
+- beginner-friendly
+- easy to read
+- correct
+- well explained
+- suitable for students learning data analysis
 
-### **Step 1: Automated Data Discovery & Documentation**
-1. Systematically search the project workspace to find all `.csv` files. Print out the names and paths of the files you discovered.
-2. Read the schema of these files and determine the overarching business domain (e.g., E-commerce, Education, HR, Finance).
-3. Generate a comprehensive **Data Dictionary** explaining the presumed meaning and data type of every column in every table you found.
+## Important style rules
+- Use simple Python and simple pandas code.
+- Import all CSV files found in the project.
+- Use normal `pd.read_csv()` statements.
+- Do not use the `warnings` module unless absolutely necessary.
+- Avoid unnecessary `numpy` logic if pandas can do the work clearly.
+- Avoid complicated loop-heavy code when direct code is easier for students to read.
+- Use short markdown explanations before every important code block.
+- When multiple tables are merged, explain every merge separately in simple words.
 
-### **Step 2: Data Import & Comprehensive Inspection**
-Generate Python code using `pandas` and `numpy` to:
-1. Import all the `.csv` files using the paths you discovered.
-2. Inspect the data using `.info()`, `.describe(include='all')`, and `.head()`.
-3. Check for the number of unique identifiers or primary keys to understand the grain of the data.
+## Required notebook structure
 
-### **Step 3: Dynamic Data Cleaning & Preprocessing**
-Based strictly on the data types and actual columns present, generate code to handle:
-1. **Missing Data:** Dynamically identify columns with missing values. Decide whether to impute (mean/median/mode) or drop them based on the column's business importance, and explicitly document your reasoning.
-2. **Outliers:** Identify continuous numerical columns. Generate code to detect outliers (using IQR or Z-score) and handle them appropriately (cap, drop, or transform).
-3. **Data Type Casting:** Ensure dates are converted to `datetime` objects, and categorical strings are treated correctly.ensure proper data type . there must be datatype converstion error in that cases remove errors ,remove duplicated in primary key if any or empty value if any in primary key or nulls in primary key.
+### 1. Title
+Create a clear notebook title based on the actual dataset.
 
-### **Step 4: Intelligent Feature Engineering**
-Analyze the available columns and create at least 3 to 4 new, highly relevant derived features that will aid the analysis. Examples might include:
-- Extracting Year/Month from a Date column.
-- Creating categorical bins from a continuous variable (e.g., Age Groups, Price Tiers).
-- Calculating differences or ratios between two numerical columns (e.g., Profit Margin, Days to Conversion).
-Document the business logic behind each new feature created.
+### 2. About the Data
+Before any analysis, write a markdown section called `About the Data`.
 
-### **Step 5: Data Integration & Master Dataset**
-If you found multiple tables:
-1. Identify the logical Primary and Foreign keys connecting them.
-2. Generate the appropriate `pd.merge()` code to combine them into a single comprehensive `master_df`.
-3. If you only found one table, skip the merge but clearly state that the dataset is already flat.
+In that section:
+- explain what the data is about in simple words
+- identify the likely business or project domain
+- explain the role of each CSV file in 1-2 simple lines
 
-### **Step 6: Dynamic KPI & Business Metrics Calculation**
-This is critical. Determine what "success" or "performance" means for this specific dataset. 
-Generate code to calculate and format 5 to 6 vital Key Performance Indicators (KPIs). Depending on the data, these must include:
-- Overall volumetric metrics (Total counts, Total amounts).
-- Averages or Rates (Average order value, Completion rate, Churn rate).
-- Group-level aggregations (e.g., Top 5 categories, Best performing regions, Highest scoring segments).
-Ensure the results are printed cleanly.
+### 3. Import All CSV Files
+Search the project and import every CSV file you find.
 
-### **Step 7: Deep Exploratory Data Analysis (EDA) & Visualization**
-Generate clean, aesthetically pleasing code using `matplotlib.pyplot` and `seaborn`. For the visualizations you choose, you must adhere to this rule: **For every single plot, you must output 2-3 bullet points interpreting the graph and drawing actionable business insights.**
-Create at least the following types of visualizations, selecting the most appropriate columns dynamically:
-1. **Univariate Analysis (2 plots):** Show the distribution of the most important numerical metric (Histogram) and the most important categorical grouping (Bar Chart).
-2. **Bivariate Analysis (2 plots):** Show the relationship between a key categorical variable and a key numerical variable (e.g., Box Plot or Violin Plot), and a trend over time if date columns exist (Line Chart).
-3. **Multivariate Analysis (2 plots):** Show relationships between multiple numerical columns (Scatter Plot with a `hue`) and an overall Correlation Heatmap of all numerical features.
+Requirements:
+- use direct `pd.read_csv()` code
+- use clear variable names based on the filenames
+- do not create a noisy "Found X CSV files" printout block unless it is truly needed
 
-**Final Requirement:** 
-Your output must be sequentially ordered with clear headers, detailed markdown explanations, and functionally perfect Python code blocks. Do not summarize the steps—write the actual, complete code for the entire notebook.
+### 4. Basic Inspection
+Show:
+- row counts for all imported tables
+- sample rows for the most important tables
+- important column checks such as missing values and duplicate key checks
+
+### 5. Data Cleaning
+Clean the data based on the real columns that exist.
+
+Examples:
+- convert date columns to datetime
+- handle obvious nulls
+- remove or explain unnecessary columns if they are fully null
+- check duplicate primary keys if relevant
+
+Explain each cleaning step in simple language.
+
+### 6. Feature Engineering
+Create a few useful new columns based on the dataset.
+
+Examples:
+- year or month from a date
+- number of days between two dates
+- simple groups or categories from numeric columns
+
+Explain why each new column is useful.
+
+### 7. Merges and Master Table
+If there are multiple related tables, build a final master table.
+
+This section is very important.
+
+For every merge:
+- add a markdown heading for that merge step
+- explain which two tables are being merged
+- explain the key used for the merge
+- explain why the merge is needed
+- explain what new information is added after the merge
+
+Then show the merge code.
+
+If there is only one table, clearly say no merge is needed.
+
+### 8. KPI Calculation
+Calculate the most useful business or project KPIs based on the actual data.
+
+Examples:
+- total revenue
+- total records
+- average value
+- completion rate
+- top categories
+- top customers
+- top locations
+
+Print the KPIs clearly.
+
+### 9. Charts
+Create a few simple charts using `matplotlib` and `seaborn`.
+
+Suggested chart types:
+- histogram for an important numeric column
+- bar chart for an important category
+- line chart for time trend if dates exist
+- one grouped chart for comparison
+
+After each chart, include 2-3 simple student-friendly interpretation points.
+
+### 10. Final Summary
+End with a short simple summary:
+- what the data is about
+- the most important result
+- one or two key business or project insights
+
+## Final requirement
+The notebook must adapt to whatever CSV files are present in the project. Do not write generic filler. Use the real files, real columns, and real relationships found in the workspace.
 
 ---
 **END PROMPT**
